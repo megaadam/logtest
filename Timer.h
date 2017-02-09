@@ -3,7 +3,8 @@
 #include <iostream>
 #include <thread>
 
-
+// Simple hi-res timer
+// Print elapsed time when goint out of scope
 class Timer
 {
 public:	
