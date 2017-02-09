@@ -1,0 +1,10 @@
+
+adam@adam-ubuntu:~/git/test$ g++ *.cpp --std=c++11 -o x
+adam@adam-ubuntu:~/git/test$ x | egrep "Ela|Test"
+Test stringstream empty constructor: x 1000000
+Elapsed: 523.035 ms
+Test LOG() x 1000000
+Elapsed: 863.906 ms
+Test printf() x 1000000
+Elapsed: 389.615 ms
+
