@@ -2,9 +2,9 @@
 #include <sstream>
 #include <iostream>
 
-#define LOG(s)	{ \
-								LogProxy logProxy; \
-								logProxy << " | "  << " => " << __PRETTY_FUNCTION__ << ":" << __LINE__ << " " << s << std::endl; \
+#define LOG1(s)	{ \
+								LogProxy1 logProxy1; \
+								logProxy1 << " | "  << " => " << __PRETTY_FUNCTION__ << ":" << __LINE__ << " " << s << std::endl; \
 				}
 
 #define LOG2(s)	{ \
@@ -12,20 +12,24 @@
 								logProxy << " | "  << " => " << __PRETTY_FUNCTION__ << ":" << __LINE__ << " " << s << std::endl; \
 				}
 
+#define LOG3(s)	{ \
+								LogProxy3 logProxy; \
+								logProxy << " | "  << " => " << __PRETTY_FUNCTION__ << ":" << __LINE__ << " " << s << std::endl; \
+				}
 
-class LogProxy
+// The most primitive implementation
+class LogProxy1
 {
 public:
-	LogProxy()
+	LogProxy1()
 	{
 
 	}
 
 
-	~LogProxy()
+	~LogProxy1()
 	{
-		//std::cout << mStringStream.str().c_str() << std::endl; // #1
-		printf(mStringStream.str().c_str()); // #2
+        std::cout << mStringStream.str().c_str();
 	}
 
 
@@ -38,12 +42,11 @@ public:
 	}
 
 private:
-	static std::stringstream mStringStream;
+	std::stringstream mStringStream;
 
 };
 
-std::stringstream LogProxy::mStringStream;
-
+// primitive implementation with static stringstream, NOT thread safe
 class LogProxy2
 {
 public:
@@ -52,25 +55,63 @@ public:
 
 	}
 
-
 	~LogProxy2()
 	{
-		std::cout << mStringStream.str().c_str() << std::endl; // #1
-		//printf(mStringStream.str().c_str()); // #2
+		std::cout << mStringStream.str().c_str();
 	}
 
-
-	std::stringstream& operator<<(const std::string& ss)
-	{
-		mStringStream.clear();
-		mStringStream.str(std::string());
-		mStringStream << ss;
-		return mStringStream;
-	}
+    std::stringstream& operator<<(const std::string& ss)
+    {
+        mStringStream.clear();
+        mStringStream.str(std::string());
+        mStringStream << ss;
+        return mStringStream;
+    }
 
 private:
 	static std::stringstream mStringStream;
-
 };
 
 std::stringstream LogProxy2::mStringStream;
+
+// primitive implementation with static stringstream AND buffering, NOT thread safe
+class LogProxy3
+{
+public:
+    LogProxy3()
+    {
+
+    }
+
+    ~LogProxy3()
+    {
+        const static unsigned int maxCount = 1999;
+        static unsigned int count = 0;
+
+        if (count < maxCount)
+        {
+            ++count;
+        }
+        else
+        {
+            std::cout << mStringStream.str().c_str();
+
+            count = 0;
+            mStringStream.clear();
+            mStringStream.str(std::string());
+            //auto p = mStringStream.str().c_str();
+            //mStringStream.rdbuf()->pubsetbuf(new char[20024](), 20024);
+        }
+    }
+
+    std::stringstream& operator<<(const std::string& ss)
+    {
+        mStringStream << ss;
+        return mStringStream;
+    }
+
+private:
+    static std::stringstream mStringStream;
+};
+
+std::stringstream LogProxy3::mStringStream;
