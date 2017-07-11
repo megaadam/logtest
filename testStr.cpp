@@ -1,4 +1,5 @@
 #include "LogProxy.h"
+#include "LogP.h"
 #include "Timer.h"
 #include <unistd.h>
 #include <memory>
@@ -57,7 +58,7 @@ void LogPerfTest()
 }
 
 void f2()
-{
+{	// Forget these dinosauric tests
     std::ostringstream ss;
     ss << "Hello stringstream" << std::endl;
     std::cout << ss.str().c_str();
@@ -79,8 +80,19 @@ void f2()
 
 }
 
+void LogTest()
+{
+	LOG(DEBUG, "Forty-two equals: " << 42);
+	LOG(INFO, "All Media Is Fake: " << 666);
+
+	LogProxy::setCurrentLevel(LOG::DEBUG);
+
+	LOG(DEBUG, "Forty-two equals: " << 42);
+	LOG(INFO, "All Media Is Fake: " << 666);
+}
+
 int main()
 {
-    //f2();
-	LogPerfTest();
+	LogTest();
 }
+

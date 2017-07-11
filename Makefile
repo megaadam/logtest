@@ -1,4 +1,4 @@
 CC=g++ -std=c++14
 
 default: 
-	$(CC) -o logtest testStr.cpp
+	$(CC) -o logtest testStr.cpp LogP.cpp
