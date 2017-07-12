@@ -33,50 +33,11 @@ namespace LOG {
 class LogProxy
 {
 public:
-	LogProxy(const std::string& fileName, const unsigned int lineNum, const std::string& prettyFunc)
-	{
+	LogProxy(const std::string& fileName, const unsigned int lineNum, const std::string& prettyFunc);
 
-		auto now = std::chrono::system_clock::now();
-		auto now_c = std::chrono::system_clock::to_time_t(now);
-		mStringStream << std::put_time(std::localtime(&now_c), "%F %T");
+	~LogProxy();
 
-		if(logMillisec == true)
-		{
-			auto milli = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-			mStringStream << "." << (milli % 1000);
-		}
-
-		if(logThreadId == true)
-		{
-			mStringStream << " | " << pthread_self();
-		}
-
-		if(logFilename == true)
-		{
-			mStringStream << " | " << fileName;
-		}
-
-		if(logLinenum == true)
-		{
-			mStringStream << " :" << lineNum;
-		}
-
-		if(logPrettyFunc == true)
-		{
-			mStringStream << " | " << prettyFunc;
-		}
-	}
-
-	~LogProxy()
-	{
-        std::cout << mStringStream.str().c_str() << std::endl << std::endl << std::endl;
-	}
-
-	std::stringstream& operator<<(const std::string& ss)
-	{
-		mStringStream << ss ;
-		return mStringStream;
-	}
+	std::stringstream& operator<<(const std::string& ss);
 
 
 	// currentLevel
@@ -160,5 +121,6 @@ private:
 	static bool logFilename;
 	static bool logLinenum;
 	static bool logPrettyFunc;
+	static bool logTraceID;
 };
 
