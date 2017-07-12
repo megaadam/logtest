@@ -88,7 +88,6 @@ class MessageProcessor
 public:
 	MessageProcessor()
 	{
-		mThread = std::thread(&MessageProcessor::Run, this);
 	}
 
 	virtual ~MessageProcessor()
@@ -145,7 +144,7 @@ public:
 
 
 private:
-	std::thread mThread;
+	std::thread mThread  = std::thread(&MessageProcessor::Run, this); // Header file init yay!!
 
 };
 
@@ -154,7 +153,6 @@ class StreamEvent
 public:
 	StreamEvent()
 	{
-		mThread = std::thread(&StreamEvent::Run, this);
 	}
 
 	~StreamEvent()
@@ -208,7 +206,7 @@ public:
 	}
 
 	private:
-		std::thread mThread;
+		std::thread mThread  = std::thread(&StreamEvent::Run, this);
 
 };
 
