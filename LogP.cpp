@@ -1,6 +1,6 @@
 #include "LogP.h"
 
-	LogProxy::LogProxy(const std::string& fileName, const unsigned int lineNum, const std::string& prettyFunc)
+	LogProxy::LogProxy(const char* fileName, const unsigned int lineNum, const char* prettyFunc)
 	{
 
 		auto now = std::chrono::system_clock::now();

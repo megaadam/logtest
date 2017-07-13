@@ -33,7 +33,7 @@ namespace LOG {
 class LogProxy
 {
 public:
-	LogProxy(const std::string& fileName, const unsigned int lineNum, const std::string& prettyFunc);
+	LogProxy(const char* fileName, const unsigned int lineNum, const char* prettyFunc);
 
 	~LogProxy();
 

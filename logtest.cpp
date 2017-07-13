@@ -119,9 +119,10 @@ public:
 	void Run()
 	{
 		auto seed = (long)this; // What other way to seed uniquely?
+		std::srand(seed);
+
 		LOG(DEBUG, "Seed: " << seed);
 
-		std::srand(seed);
 		for(int i = 0; i < 5; ++i)
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(20 + std::rand() % 1000));
@@ -139,7 +140,6 @@ public:
 				break;
 			}
 		}
-
 	}
 
 
