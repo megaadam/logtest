@@ -48,7 +48,7 @@
 	}
 
 // Log level and log fields should be picked up from config
-LOG::logLevel LogProxy::currentLevel = LOG::ERROR;
+LogProxy::LogLevel LogProxy::currentLevel = LogProxy::LogLevel::ERROR;
 
 bool LogProxy::logMillisec = true;
 bool LogProxy::logThreadId = true;

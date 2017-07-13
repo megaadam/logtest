@@ -215,7 +215,7 @@ void LogTest()
 	LOG(DEBUG, "Forty-two equals: " << 42);
 	LOG(INFO, "ALL MEDIA IS FAKE: " << 666); // Some messages should stay below the noise
 
-	LogProxy::setCurrentLevel(LOG::DEBUG);
+	LogProxy::setCurrentLevel(LogProxy::LogLevel::DEBUG);
 
 	LOG(DEBUG, "Forty-two equals: " << 42);
 	LOG(INFO, "ALL MEDIA IS FAKE: " << 666);

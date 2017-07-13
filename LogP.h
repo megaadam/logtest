@@ -23,8 +23,7 @@ namespace LOG {
 
 #define LOG(messageLevel, s) \
 		{ \
-			using namespace LOG; \
-			if(messageLevel >= LogProxy::getCurrentLevel()) \
+			if(LogProxy::LogLevel::messageLevel >= LogProxy::getCurrentLevel()) \
 			{ \
 				LogProxy(__FILE__, __LINE__, __PRETTY_FUNCTION__) << " | "  << s; \
 			} \
@@ -32,7 +31,16 @@ namespace LOG {
 
 class LogProxy
 {
+
 public:
+	enum class LogLevel
+	{
+		INFO = 0,
+		WARNING = 1,
+		DEBUG = 2,
+		ERROR = 3,
+	};
+
 	LogProxy(const char* fileName, const unsigned int lineNum, const char* prettyFunc);
 
 	~LogProxy();
@@ -41,12 +49,12 @@ public:
 
 
 	// currentLevel
-	static inline LOG::logLevel getCurrentLevel()
+	static inline LogLevel getCurrentLevel()
 	{
 		return currentLevel;
 	}
 
-	static inline void setCurrentLevel(LOG::logLevel l)
+	static inline void setCurrentLevel(LogLevel l)
 	{
 		currentLevel = l;
 	}
@@ -112,9 +120,10 @@ public:
 	}
 
 
+
 private:
 	std::stringstream mStringStream;
-	static LOG::logLevel currentLevel;
+	static LogLevel currentLevel;
 
 	static bool logMillisec;
 	static bool logThreadId;
