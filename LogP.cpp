@@ -2,10 +2,25 @@
 
 	LogProxy::LogProxy(const char* fileName, const unsigned int lineNum, const char* prettyFunc)
 	{
-
 		auto now = std::chrono::system_clock::now();
 		auto now_c = std::chrono::system_clock::to_time_t(now);
-		mStringStream << std::put_time(std::localtime(&now_c), "%F %T");
+		
+		mStringStream.str(std::string());
+
+		// Fails with g++ 4.9, due to incomplete libraries
+		//mStringStream << std::put_time(std::localtime(&now_c), "%F %T");
+		if(true)
+		{
+			// workaround, before we have g++ 5.0
+			time_t rawtime;
+			time(&rawtime);
+			tm* info = gmtime(&rawtime);
+
+			static char buffer[80];
+			strftime(buffer, sizeof(buffer), "%F %T", info);
+			mStringStream << buffer;
+		}
+
 
 		if(logMillisec == true)
 		{
@@ -25,7 +40,7 @@
 
 		if(logLinenum == true)
 		{
-			mStringStream << " :" << lineNum;
+			mStringStream << ": " << lineNum;
 		}
 
 		if(logPrettyFunc == true)
@@ -38,12 +53,13 @@
 	{
 		// Of course the log target should be configurable to:
 		// stdout, stderr, logd etc
-        std::cout << mStringStream.str().c_str() << std::endl;
+		mStringStream << std::endl;
+        std::cout << mStringStream.str().c_str();
 	}
 
 	std::stringstream& LogProxy::operator<<(const std::string& ss)
 	{
-		mStringStream << ss ;
+		mStringStream << ss;
 		return mStringStream;
 	}
 
@@ -57,3 +73,5 @@ bool LogProxy::logLinenum = false;
 bool LogProxy::logPrettyFunc = true;
 
 bool LogProxy::logTraceID = false; // should be true when implemented!!
+
+std::stringstream LogProxy::mStringStream;

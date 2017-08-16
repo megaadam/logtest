@@ -9,12 +9,29 @@
 
 #include "Timer.h"
 
+void LogPerfTest()
+{
+	const int repeat = 25000;
+	{
+		Timer timerTot("LOG perf total"); // class Timer logs elapsed lifetime in destructor
+		for(int i = 0; i < 4; ++i)
+		{
+			auto rnd = std::rand();
+			Timer timer("LOG perf");
+			for(int i = 0; i < repeat; ++i)
+			{
+				LOG(ERROR, "Log some random value: " << rnd);
+			}
+		}
+
+	}
+}
 
 // Compare logger overhead
 // Typically test with: $ ./logtest | grep total
-void LogPerfTest()
+void LogPerfTestOld()
 {
-	const int repeat = 100000;
+	const int repeat = 25000;
 	std::srand(std::time(0));
 	auto rnd = std::rand();
 
@@ -219,15 +236,16 @@ void LogTest()
 
 	LOG(DEBUG, "Forty-two equals: " << 42);
 	LOG(INFO, "ALL MEDIA IS FAKE: " << 666);
-
+	
+	// Self-contained objects with individual treads
 	MessageProcessor mp[2];
 	StreamEvent se[2];
 }
 
 int main()
 {
-	LogTest();
-
-	// std::cout << std::hex << (pthread_self() & 0x0fffffffffff) << "\n";
+	LOG(ERROR, "42 hex formatted is: " << std::hex << 42);
+	LOG(ERROR, "42 unformatted is: " << 42 << " ... which shows that stream formatting is restored between log lines");
+	LogPerfTest();
 }
 

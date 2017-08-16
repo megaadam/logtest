@@ -122,7 +122,7 @@ public:
 
 
 private:
-	std::stringstream mStringStream;
+	static std::stringstream mStringStream;
 	static LogLevel currentLevel;
 
 	static bool logMillisec;

@@ -35,7 +35,6 @@ public:
 
 	std::stringstream& operator<<(const std::string& ss)
 	{
-		mStringStream.clear();
 		mStringStream.str(std::string());
 		mStringStream << ss;
 		return mStringStream;
@@ -62,7 +61,6 @@ public:
 
     std::stringstream& operator<<(const std::string& ss)
     {
-        mStringStream.clear();
         mStringStream.str(std::string());
         mStringStream << ss;
         return mStringStream;
@@ -97,7 +95,6 @@ public:
             std::cout << mStringStream.str().c_str();
 
             count = 0;
-            mStringStream.clear();
             mStringStream.str(std::string());
             //auto p = mStringStream.str().c_str();
             //mStringStream.rdbuf()->pubsetbuf(new char[20024](), 20024);
