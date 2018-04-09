@@ -1,4 +1,4 @@
-#include "LogP.h"
+#include "LogProxy.h"
 
 	LogProxy::LogProxy(const char* fileName, const unsigned int lineNum, const char* prettyFunc)
 	{

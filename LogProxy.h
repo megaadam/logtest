@@ -1,114 +1,135 @@
+#pragma once
+
+#include <pthread.h>
+
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
 #include <string>
 #include <sstream>
-#include <iostream>
+#include <thread>
 
-#define LOG1(s)	{ \
-								LogProxy1 logProxy1; \
-								logProxy1 << " | "  << " => " << __PRETTY_FUNCTION__ << ":" << __LINE__ << " " << s << std::endl; \
-				}
 
-#define LOG2(s)	{ \
-								LogProxy2 logProxy; \
-								logProxy << " | "  << " => " << __PRETTY_FUNCTION__ << ":" << __LINE__ << " " << s << std::endl; \
-				}
+namespace LOG {
+	enum logLevel
+	{
+		INFO = 0,
+		WARNING = 1,
+		DEBUG = 2,
+		ERROR = 3,
+	};
+}
 
-#define LOG3(s)	{ \
-								LogProxy3 logProxy; \
-								logProxy << " | "  << " => " << __PRETTY_FUNCTION__ << ":" << __LINE__ << " " << s << std::endl; \
-				}
+#define LOG(messageLevel, s) \
+		{ \
+			if(LogProxy::LogLevel::messageLevel >= LogProxy::getCurrentLevel()) \
+			{ \
+				LogProxy(__FILE__, __LINE__, __PRETTY_FUNCTION__) << " | "  << s; \
+			} \
+		}
 
-// The most primitive implementation
-class LogProxy1
+class LogProxy
 {
+
 public:
-	LogProxy1()
+	enum class LogLevel
 	{
+		INFO = 0,
+		WARNING = 1,
+		DEBUG = 2,
+		ERROR = 3,
+	};
 
+	LogProxy(const char* fileName, const unsigned int lineNum, const char* prettyFunc);
+
+	~LogProxy();
+
+	std::stringstream& operator<<(const std::string& ss);
+
+
+	// currentLevel
+	static inline LogLevel getCurrentLevel()
+	{
+		return currentLevel;
+	}
+
+	static inline void setCurrentLevel(LogLevel l)
+	{
+		currentLevel = l;
 	}
 
 
-	~LogProxy1()
+	// logMillisec
+	static inline bool getLogMillisec()
 	{
-        std::cout << mStringStream.str().c_str();
+		return logMillisec;
+	}
+
+	static inline void setLogMillisec(bool l)
+	{
+		logMillisec = l;
 	}
 
 
-	std::stringstream& operator<<(const std::string& ss)
+	// logThreadId
+	static inline bool getlogThreadId()
 	{
-		mStringStream.str(std::string());
-		mStringStream << ss;
-		return mStringStream;
+		return logThreadId;
 	}
 
-private:
-	std::stringstream mStringStream;
-
-};
-
-// primitive implementation with static stringstream, NOT thread safe
-class LogProxy2
-{
-public:
-	LogProxy2()
+	static inline void setlogThreadId(bool l)
 	{
-
+		logThreadId = l;
 	}
 
-	~LogProxy2()
+
+	// logFilename
+	static inline bool getlogFilename()
 	{
-		std::cout << mStringStream.str().c_str();
+		return logFilename;
 	}
 
-    std::stringstream& operator<<(const std::string& ss)
-    {
-        mStringStream.str(std::string());
-        mStringStream << ss;
-        return mStringStream;
-    }
+	static inline void setlogFilename(bool l)
+	{
+		logFilename = l;
+	}
+
+
+	// logLinenum
+	static inline bool getlogLinenum()
+	{
+		return logLinenum;
+	}
+
+	static inline void setlogLinenum(bool l)
+	{
+		logLinenum = l;
+	}
+
+
+	// logPrettyFunc
+	static inline bool getlogPrettyFunc()
+	{
+		return logPrettyFunc;
+	}
+
+	static inline void setlogPrettyFunc(bool l)
+	{
+		logPrettyFunc = l;
+	}
+
+
 
 private:
 	static std::stringstream mStringStream;
+	static LogLevel currentLevel;
+
+	static bool logMillisec;
+	static bool logThreadId;
+	static bool logFilename;
+	static bool logLinenum;
+	static bool logPrettyFunc;
+	static bool logTraceID;
 };
 
-std::stringstream LogProxy2::mStringStream;
-
-// primitive implementation with static stringstream AND buffering, NOT thread safe
-class LogProxy3
-{
-public:
-    LogProxy3()
-    {
-
-    }
-
-    ~LogProxy3()
-    {
-        const static unsigned int maxCount = 1999;
-        static unsigned int count = 0;
-
-        if (count < maxCount)
-        {
-            ++count;
-        }
-        else
-        {
-            std::cout << mStringStream.str().c_str();
-
-            count = 0;
-            mStringStream.str(std::string());
-            //auto p = mStringStream.str().c_str();
-            //mStringStream.rdbuf()->pubsetbuf(new char[20024](), 20024);
-        }
-    }
-
-    std::stringstream& operator<<(const std::string& ss)
-    {
-        mStringStream << ss;
-        return mStringStream;
-    }
-
-private:
-    static std::stringstream mStringStream;
-};
-
-std::stringstream LogProxy3::mStringStream;

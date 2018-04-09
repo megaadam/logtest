@@ -1,24 +1,24 @@
-#include "LogProxy.h"
-#include "LogP.h"
-
-
 #include <unistd.h>
 #include <memory>
 #include <random>
 #include <thread>
 
+#include "LogProxy.h"
+#include "LogProxy123.h"
 #include "Timer.h"
 
 void LogPerfTest()
 {
-	const int repeat = 25000;
+	const int repeat = 4;
+	const int loopCount = 25000;
+
 	{
 		Timer timerTot("LOG perf total"); // class Timer logs elapsed lifetime in destructor
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < repeat; ++i)
 		{
 			auto rnd = std::rand();
 			Timer timer("LOG perf");
-			for(int i = 0; i < repeat; ++i)
+			for(int i = 0; i < loopCount; ++i)
 			{
 				LOG(ERROR, "Log some random value: " << rnd);
 			}
@@ -31,47 +31,49 @@ void LogPerfTest()
 // Typically test with: $ ./logtest | grep total
 void LogPerfTestOld()
 {
-	const int repeat = 25000;
+	const int repeat = 4;
+	const int loopCount = 25000;
+
 	std::srand(std::time(0));
 	auto rnd = std::rand();
 
     std::unique_ptr<Timer> p(new Timer("LOG1 total"));
-    for (auto i = 0; i < 4; ++i)
+    for (auto i = 0; i < repeat; ++i)
     {
         Timer t("Test LOG1() with class LogProxy ");
-        for (int i = 0; i < repeat; ++i)
+        for (int i = 0; i < loopCount; ++i)
         {
             LOG1("LOG1 rnd: " << rnd);
         }
     }
 
     p.reset(new Timer("LOG2 total"));
-    for (auto i = 0; i < 4; ++i)
+    for (auto i = 0; i < repeat; ++i)
     {
         Timer t("Test LOG2() with class LogProxy2 ");
-        for (int i = 0; i < repeat; ++i)
+        for (int i = 0; i < loopCount; ++i)
         {
             LOG2("LOG2 rnd: " << rnd);
         }
     }
 
     p.reset(new Timer("LOG3 total"));
-    for(auto i = 0; i < 4; ++i)
+    for(auto i = 0; i < repeat; ++i)
     {
         Timer t("Test LOG3() with class LogProxy3 ");
-        for (int i = 0; i < repeat; ++i)
+        for (int i = 0; i < loopCount; ++i)
         {
             LOG3("LOG3 rnd: " << rnd);
         }
     }
 
     p.reset(new Timer("printf total"));
-    for (auto i = 0; i < 4; ++i)
+    for (auto i = 0; i < repeat; ++i)
 	 {
 	 	Timer t("Simple printf()");
-	 	for(int i = 0; i < repeat; ++i)
+	 	for(int i = 0; i < loopCount; ++i)
 	 	{
-	 		printf(" | => %s:%i prin rnd: %i\n", __PRETTY_FUNCTION__, __LINE__, rnd);
+	 		printf(" | => %s:%i printf rnd: %i\n", __PRETTY_FUNCTION__, __LINE__, rnd);
 	 	}
 	 }
     p.reset(nullptr);
@@ -247,5 +249,6 @@ int main()
 	LOG(ERROR, "42 hex formatted is: " << std::hex << 42);
 	LOG(ERROR, "42 unformatted is: " << 42 << " ... which shows that stream formatting is restored between log lines");
 	LogPerfTest();
+	LogPerfTestOld();
 }
 
